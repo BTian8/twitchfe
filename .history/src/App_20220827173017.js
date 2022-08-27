@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Layout, message, Menu } from 'antd';
 import { LikeOutlined, FireOutlined } from '@ant-design/icons';
 import { logout, getFavoriteItem, getTopGames } from './utils';
-import PageHeader from './components/PageHeader';
-import CustomSearch from './components/CustomSearch';
+import PageHeader from './PageHeader';
+import CustomSearch from './CustomSearch';
  
 const { Header, Content, Sider } = Layout;
  

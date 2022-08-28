@@ -1,28 +1,22 @@
-import { Layout, Menu, message } from 'antd';
-import React, { useEffect, useState } from 'react';
-import {
-  logout,
-  getTopGames,
-  getRecommendations,
-  searchGameById,
-  getFavoriteItem
-} from './utils';
-import CustomSearch from './components/CustomSearch';
+import React, { useState, useEffect } from 'react';
+import { Layout, message, Menu } from 'antd';
 import { LikeOutlined, FireOutlined } from '@ant-design/icons';
+import { logout, getFavoriteItem, getTopGames, searchGameById } from './utils';
 import PageHeader from './components/PageHeader';
+import CustomSearch from './components/CustomSearch';
 import Home from './components/Home';
  
-const { Sider, Content } = Layout
+const { Header, Content, Sider } = Layout;
  
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
+  const [favoriteItems, setFavoriteItems] = useState([]);
   const [topGames, setTopGames] = useState([])
   const [resources, setResources] = useState({
     VIDEO: [],
     STREAM: [],
     CLIP: [],
   });
-  const [favoriteItems, setFavoriteItems] = useState([]);
  
   useEffect(() => {
     getTopGames()
@@ -49,32 +43,14 @@ function App() {
     })
   }
  
-  const onGameSelect = ({ key }) => {
-    if (key === "recommendation") {
-      getRecommendations().then((data) => {
-        setResources(data);
-      });
- 
-      return;
-    }
- 
-    searchGameById(key).then((data) => {
-      setResources(data);
-    });
-  };
- 
   const customSearchOnSuccess = (data) => {
     setResources(data);
   }
  
-  const favoriteOnChange = () => {
-    getFavoriteItem()
-      .then((data) => {
-        setFavoriteItems(data);
-      })
-      .catch((err) => {
-        message.error(err.message);
-      });
+  const onGameSelect = ({ key }) => {
+    searchGameById(key).then((data) => {
+      setResources(data);
+    });
   };
  
   const mapTopGamesToProps = (topGames) => [
@@ -100,14 +76,17 @@ function App() {
     }
   ]
  
+ 
   return (
     <Layout>
-      <PageHeader
-        loggedIn={loggedIn}
-        signoutOnClick={signoutOnClick}
-        signinOnSuccess={signinOnSuccess}
-        favoriteItems={favoriteItems}
-      />
+      <Header>
+        <PageHeader
+          loggedIn={loggedIn}
+          signoutOnClick={signoutOnClick}
+          signinOnSuccess={signinOnSuccess}
+          favoriteItems={favoriteItems}
+        />
+      </Header>
       <Layout>
         <Sider width={300} className="site-layout-background">
           <CustomSearch onSuccess={customSearchOnSuccess} />
@@ -131,14 +110,13 @@ function App() {
             <Home
               resources={resources}
               loggedIn={loggedIn}
-              favoriteOnChange={favoriteOnChange}
               favoriteItems={favoriteItems}
             />
           </Content>
         </Layout>
       </Layout>
     </Layout>
-  );
+  )
 }
  
 export default App;
